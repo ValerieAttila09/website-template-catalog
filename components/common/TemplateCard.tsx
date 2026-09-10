@@ -4,9 +4,9 @@ interface Template {
   id: string
   title: string
   slug: string
-  price: number
-  thumbnail_url: string
-  tech_stack: string[]
+  price: string
+  thumbnailUrl: string | null
+  techStack: string[] | null
 }
 
 export default function TemplateCard({ template }: { template: Template }) {
@@ -15,14 +15,14 @@ export default function TemplateCard({ template }: { template: Template }) {
     style: 'currency',
     currency: 'IDR',
     maximumFractionDigits: 0,
-  }).format(template.price)
+  }).format(Number(template.price))
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       {/* Thumbnail Gambar */}
       <div className="aspect-video bg-slate-100 relative overflow-hidden">
         <img 
-          src={template.thumbnail_url || '/placeholder.png'} 
+          src={template.thumbnailUrl || '/placeholder.png'} 
           alt={template.title}
           className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
         />
@@ -31,7 +31,7 @@ export default function TemplateCard({ template }: { template: Template }) {
       {/* Konten Kartu */}
       <div className="p-5">
         <div className="flex gap-2 mb-2 flex-wrap">
-          {template.tech_stack?.map((tech, idx) => (
+          {template.techStack?.map((tech, idx) => (
             <span key={idx} className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-medium">
               {tech}
             </span>
