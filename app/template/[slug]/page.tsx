@@ -19,9 +19,9 @@ export default async function PreviewPage({ params }: { params: Promise<{ slug: 
   const isDev = process.env.NODE_ENV === 'development';
 
   // Gunakan path lokal saat development, dan subdomain saat production
-  const demoUrl = isDev 
-    ? `/demo/${slug}/index.html` 
-    : `https://${slug}.demo.domainkamu.com`;
+  //   : `https://${slug}.demo.domainkamu.com`;
+  
+  const demoUrl = `/demo/${slug}/index.html`; 
 
   return (
     <div className="flex flex-col h-screen w-full bg-gray-900">
