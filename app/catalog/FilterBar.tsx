@@ -20,54 +20,66 @@ export default function FilterBar() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 mb-8 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-      {/* Search Input */}
-      <div className="flex-1">
+    <div className="mb-8 rounded-3xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
+      <div className="flex flex-col gap-3 lg:flex-row">
+        <label className="relative flex-1">
+          <span className="sr-only">Cari template</span>
+          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">⌕</span>
         <input
           type="text"
-          placeholder="Cari nama atau deskripsi template..."
+          placeholder="Cari template, gaya, atau fitur..."
           defaultValue={searchParams.get('q') || ''}
           onChange={(e) => handleFilterChange('q', e.target.value)}
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-950 focus:bg-white focus:ring-4 focus:ring-slate-950/5"
         />
+        </label>
+
+        <label className="flex flex-col justify-center rounded-2xl border border-slate-200 bg-slate-50 px-4 lg:min-w-44">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Category</span>
+          <select
+            aria-label="Filter kategori"
+            defaultValue={searchParams.get('category') || 'all'}
+            onChange={(e) => handleFilterChange('category', e.target.value)}
+            className="mt-0.5 w-full bg-transparent text-sm font-semibold text-slate-800 outline-none"
+          >
+            <option value="all">Semua kategori</option>
+            <option value="portfolio">Portfolio</option>
+            <option value="ecommerce">E-Commerce</option>
+            <option value="dashboard">Dashboard</option>
+            <option value="landing-page">Landing Page</option>
+          </select>
+        </label>
+
+        <label className="flex flex-col justify-center rounded-2xl border border-slate-200 bg-slate-50 px-4 lg:min-w-44">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Built with</span>
+          <select
+            aria-label="Filter tech stack"
+            defaultValue={searchParams.get('tech') || 'all'}
+            onChange={(e) => handleFilterChange('tech', e.target.value)}
+            className="mt-0.5 w-full bg-transparent text-sm font-semibold text-slate-800 outline-none"
+          >
+            <option value="all">Semua tech stack</option>
+            <option value="Next.js">Next.js</option>
+            <option value="React">React</option>
+            <option value="Tailwind">Tailwind CSS</option>
+            <option value="TypeScript">TypeScript</option>
+          </select>
+        </label>
+
+        <label className="flex flex-col justify-center rounded-2xl border border-slate-200 bg-slate-50 px-4 lg:min-w-48">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Sort by</span>
+          <select
+            aria-label="Urutkan template"
+            defaultValue={searchParams.get('sort') || 'newest'}
+            onChange={(e) => handleFilterChange('sort', e.target.value)}
+            className="mt-0.5 w-full bg-transparent text-sm font-semibold text-slate-800 outline-none"
+          >
+            <option value="newest">Terbaru</option>
+            <option value="price-asc">Harga terendah</option>
+            <option value="price-desc">Harga tertinggi</option>
+          </select>
+        </label>
       </div>
-
-      {/* Filter Kategori */}
-      <select
-        defaultValue={searchParams.get('category') || 'all'}
-        onChange={(e) => handleFilterChange('category', e.target.value)}
-        className="px-3 py-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        <option value="all">Semua Kategori</option>
-        <option value="portfolio">Portfolio</option>
-        <option value="ecommerce">E-Commerce</option>
-        <option value="dashboard">Dashboard</option>
-        <option value="landing-page">Landing Page</option>
-      </select>
-
-      {/* Filter Tech Stack */}
-      <select
-        defaultValue={searchParams.get('tech') || 'all'}
-        onChange={(e) => handleFilterChange('tech', e.target.value)}
-        className="px-3 py-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        <option value="all">Semua Tech Stack</option>
-        <option value="Next.js">Next.js</option>
-        <option value="React">React</option>
-        <option value="Tailwind">Tailwind CSS</option>
-        <option value="TypeScript">TypeScript</option>
-      </select>
-
-      {/* Sortir Harga & Tanggal */}
-      <select
-        defaultValue={searchParams.get('sort') || 'newest'}
-        onChange={(e) => handleFilterChange('sort', e.target.value)}
-        className="px-3 py-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        <option value="newest">Terbaru</option>
-        <option value="price-asc">Harga: Rendah ke Tinggi</option>
-        <option value="price-desc">Harga: Tinggi ke Rendah</option>
-      </select>
     </div>
   );
 }
