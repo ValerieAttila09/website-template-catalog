@@ -17,11 +17,12 @@ export const templatesTable = pgTable('templates', {
   title: text('title').notNull(),
   slug: text('slug').notNull().unique(),
   description: text('description'),
+  category: text('category'), // Kolom kategori baru
   price: numeric('price', { precision: 10, scale: 2 }).notNull(),
   previewUrl: text('preview_url'),
   filePath: text('file_path').notNull(),
   thumbnailUrl: text('thumbnail_url'),
-  techStack: text('tech_stack').array(), // Representasi tipe data TEXT[] di PostgreSQL
+  techStack: text('tech_stack').array(), // Tipe array PostgreSQL
   isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
