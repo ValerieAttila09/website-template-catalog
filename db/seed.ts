@@ -1,55 +1,152 @@
 import 'dotenv/config';
+import { existsSync, readdirSync } from 'node:fs';
+import path from 'node:path';
 import { db } from './index';
 import { templatesTable } from './schema';
 
+type TemplateMeta = {
+  title: string;
+  category: string;
+  description: string;
+  techStack: string[];
+  price: string;
+  thumbnailFile?: string;
+  entrypoint?: string;
+};
+
+const demoMeta: Record<string, TemplateMeta> = {
+  'agilitycms-nextjs-starter-out1': {
+    title: 'Agility CMS Next.js Starter', category: 'SaaS & CMS',
+    description: 'Starter modern untuk membangun website berbasis content management system dengan struktur halaman yang fleksibel.',
+    techStack: ['Next.js', 'React', 'CMS'], price: '175000.00',
+  },
+  'buttercms-nextjs-starter-out1': {
+    title: 'Butter CMS Next.js Starter', category: 'SaaS & CMS',
+    description: 'Template editorial berbasis Next.js dengan halaman blog dummy dan fondasi konten yang mudah dikembangkan.',
+    techStack: ['Next.js', 'React', 'Butter CMS'], price: '175000.00', entrypoint: 'blog/index.html',
+  },
+  'chef-kitchen-nextjs-landing-page-template-main-out1': {
+    title: 'Chef Kitchen', category: 'Food & Restaurant',
+    description: 'Landing page hangat untuk restoran, chef, dan bisnis kuliner dengan fokus pada menu serta reservasi.',
+    techStack: ['Next.js', 'React', 'Tailwind CSS'], price: '145000.00',
+  },
+  'eLearning-tailwind-nextjs-free-out1': {
+    title: 'eLearning Academy', category: 'Education',
+    description: 'Template platform kursus online untuk menampilkan program belajar, mentor, dan materi edukasi secara terstruktur.',
+    techStack: ['Next.js', 'Tailwind CSS', 'React'], price: '125000.00',
+  },
+  'finewise-landing-page-out1': {
+    title: 'Finewise Finance', category: 'Finance',
+    description: 'Website fintech editorial dengan visual dashboard, insight keuangan, dan blok kepercayaan untuk produk finansial.',
+    techStack: ['Next.js', 'React', 'Tailwind CSS'], price: '195000.00', thumbnailFile: 'hero-mockup.webp',
+  },
+  'kupinglung-out1': {
+    title: 'Kupinglung Store', category: 'E-commerce',
+    description: 'Etalase e-commerce modern untuk produk audio dengan katalog, detail produk, cart, dan checkout dummy.',
+    techStack: ['Next.js', 'React', 'E-commerce'], price: '225000.00', thumbnailFile: 'main.png',
+  },
+  'Raft-Landing-page-out1': {
+    title: 'Raft Wealth Management', category: 'Finance',
+    description: 'Landing page premium untuk layanan wealth management dengan komposisi editorial dan call to action yang kuat.',
+    techStack: ['Next.js', 'React', 'Tailwind CSS'], price: '185000.00', thumbnailFile: 'big_banner.png',
+  },
+  'Resume - Shadcn UI Resume and Portfolio Template-out1': {
+    title: 'Shadcn Resume Portfolio', category: 'Portfolio',
+    description: 'Template portfolio personal yang rapi untuk menampilkan pengalaman, keahlian, project, dan profil profesional.',
+    techStack: ['Next.js', 'React', 'Shadcn UI'], price: '95000.00',
+  },
+  'shopco-next-ecommerce-out1': {
+    title: 'Shopco Fashion Store', category: 'E-commerce',
+    description: 'Storefront fashion dengan hero campaign, product grid, halaman shop, cart, dan pengalaman belanja yang lengkap.',
+    techStack: ['Next.js', 'React', 'E-commerce'], price: '225000.00', thumbnailFile: 'header-homepage.png',
+  },
+  'Sustainable-nextjs-main-out1': {
+    title: 'Sustainable Studio', category: 'Agency & Studio',
+    description: 'Website agency berkarakter untuk studio digital yang ingin menampilkan layanan, portfolio, blog, dan dokumentasi.',
+    techStack: ['Next.js', 'React', 'Tailwind CSS'], price: '165000.00',
+  },
+  test: {
+    title: 'Studio Grid Portfolio', category: 'Portfolio',
+    description: 'Template portfolio kreatif dengan halaman project, blog, tim, dan layout editorial untuk studio kecil.',
+    techStack: ['HTML5', 'CSS', 'JavaScript'], price: '85000.00', thumbnailFile: 'hero.png',
+  },
+  'Typefolio-shadcn-ui-personal-portfolio-template-main-out1': {
+    title: 'Typefolio Personal Portfolio', category: 'Portfolio',
+    description: 'Portfolio personal minimal dengan tipografi kuat untuk developer, designer, dan pekerja kreatif.',
+    techStack: ['Next.js', 'React', 'Shadcn UI'], price: '95000.00',
+  },
+};
+
+function toSlug(folderName: string) {
+  return folderName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function toPreviewUrl(folderName: string, entrypoint = 'index.html') {
+  return `/demo/${encodeURIComponent(folderName)}/${entrypoint}`;
+}
+
+function getThumbnailUrl(folderName: string, thumbnailFile?: string) {
+  if (thumbnailFile) {
+    const thumbnailPath = path.join(process.cwd(), 'public', 'demo', folderName, 'images', thumbnailFile);
+    if (existsSync(thumbnailPath)) {
+      return `/demo/${encodeURIComponent(folderName)}/images/${encodeURIComponent(thumbnailFile)}`;
+    }
+  }
+
+  return 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1200&auto=format&fit=crop';
+}
+
 async function main() {
-  console.log('Memulai proses seeding data dummy template...');
+  const demoRoot = path.join(process.cwd(), 'public', 'demo');
+  const folders = readdirSync(demoRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && demoMeta[entry.name])
+    .map((entry) => entry.name);
 
-  // Data dummy template untuk pemilik bisnis
-  const dummyTemplates = [
-    {
-      title: 'BizPro - Modern Corporate Landing Page',
-      slug: 'bizpro-corporate-landing-page',
-      description: 'Template website profesional yang dirancang khusus untuk perusahaan, agensi, dan konsultan bisnis. Dilengkapi dengan bagian layanan, testimoni, dan formulir kontak.',
-      price: '150000.00',
-      previewUrl: 'https://example.com/demo/bizpro',
-      filePath: 'templates/bizpro-v1.zip',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop',
-      techStack: ['Next.js', 'Tailwind CSS', 'React'],
-      isActive: true,
-    },
-    {
-      title: 'ShopMaster - E-Commerce Storefront',
-      slug: 'shopmaster-ecommerce-storefront',
-      description: 'Solusi toko online modern untuk UMKM dan pemilik brand lokal. Tampilan produk yang elegan dengan keranjang belanja interaktif.',
-      price: '250000.00',
-      previewUrl: 'https://example.com/demo/shopmaster',
-      filePath: 'templates/shopmaster-v1.zip',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?q=80&w=800&auto=format&fit=crop',
-      techStack: ['React', 'Tailwind CSS'],
-      isActive: true,
-    },
-    {
-      title: 'CafeAroma - Coffee Shop & Restaurant',
-      slug: 'cafearoma-restaurant-template',
-      description: 'Template elegan untuk kafe, restoran, atau bisnis kuliner. Memiliki fitur daftar menu digital, galeri foto, dan integrasi reservasi meja.',
-      price: '120000.00',
-      previewUrl: 'https://example.com/demo/cafearoma',
-      filePath: 'templates/cafearoma-v1.zip',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=800&auto=format&fit=crop',
-      techStack: ['HTML5', 'Tailwind CSS', 'JavaScript'],
-      isActive: true,
-    },
-  ];
+  const values = folders.map((folderName) => {
+    const meta = demoMeta[folderName];
+    const slug = toSlug(folderName);
+    const entrypoint = meta.entrypoint || 'index.html';
 
-  // Masukkan data ke dalam tabel templates
-  await db.insert(templatesTable).values(dummyTemplates);
+    return {
+      title: meta.title,
+      slug,
+      description: meta.description,
+      category: meta.category,
+      price: meta.price,
+      previewUrl: toPreviewUrl(folderName, entrypoint),
+      filePath: folderName,
+      thumbnailUrl: getThumbnailUrl(folderName, meta.thumbnailFile),
+      techStack: meta.techStack,
+      isActive: true,
+    };
+  });
 
-  console.log('Berhasil! Data dummy template telah dimasukkan ke database.');
+  if (values.length === 0) {
+    throw new Error('Tidak ada folder demo yang cocok dengan metadata seed.');
+  }
+
+  for (const value of values) {
+    await db.insert(templatesTable).values(value).onConflictDoUpdate({
+      target: templatesTable.slug,
+      set: {
+        title: value.title,
+        description: value.description,
+        category: value.category,
+        price: value.price,
+        previewUrl: value.previewUrl,
+        filePath: value.filePath,
+        thumbnailUrl: value.thumbnailUrl,
+        techStack: value.techStack,
+        isActive: true,
+      },
+    });
+  }
+
+  console.log(`Berhasil melakukan seed ${values.length} template demo.`);
   process.exit(0);
 }
 
-main().catch((err) => {
-  console.error('Gagal melakukan seeding data:', err);
-  process.exit(1);
+main().catch((error) => {
+  console.error('Gagal melakukan seeding data:', error);
+  process.exitCode = 1;
 });

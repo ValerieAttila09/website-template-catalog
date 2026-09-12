@@ -16,9 +16,7 @@ export default async function LivePreviewPage({ params }: PreviewPageProps) {
     notFound()
   }
 
-  const previewUrl = process.env.NODE_ENV === 'development'
-    ? `/demo/${resolvedParams.slug}/index.html`
-    : template.previewUrl || `https://${resolvedParams.slug}.demo.domainkamu.com`
+  const previewUrl = template.previewUrl || `/demo/${resolvedParams.slug}/index.html`
 
   // Format harga untuk tombol beli di top-bar
   const formattedPrice = new Intl.NumberFormat('id-ID', {
