@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[97367,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/247eb132b7f7b574.js"],"OutletBoundary"]
+3:"$Sreact.suspense"
+0:{"buildId":"WazrGU_C8tHJcJeEpz2Un","rsc":["$","$1","c",{"children":[["$","p",null,{"className":"p-8","children":"Configure Agility CMS environment variables to build site content."}],[["$","script","script-0",{"src":"/_next/static/chunks/ed6f13cb8a8eaa38.js","async":true}]],["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"loading":null,"isPartial":false}
+4:null

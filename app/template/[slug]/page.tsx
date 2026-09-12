@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { LikeButton, AddToCartButton } from '@/components/InteractiveButtons';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -19,6 +20,39 @@ export default async function TemplateDetailPage({ params }: PageProps) {
 
   if (error || !template) {
     notFound();
+  }
+
+  // Cek Auth User & Status Interaksi
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let isLiked = false;
+  let inCart = false;
+  let likeCount = 0;
+
+  // Total Like untuk Template ini
+  const { count } = await supabase
+    .from('likes')
+    .select('*', { count: 'exact', head: true })
+    .eq('template_id', template.id);
+  likeCount = count || 0;
+
+  if (user) {
+    const { data: like } = await supabase
+      .from('likes')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('template_id', template.id)
+      .maybeSingle();
+
+    const { data: cart } = await supabase
+      .from('cart_items')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('template_id', template.id)
+      .maybeSingle();
+
+    isLiked = !!like;
+    inCart = !!cart;
   }
 
   return (
@@ -47,7 +81,10 @@ export default async function TemplateDetailPage({ params }: PageProps) {
                 <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-lime-700">{template.category || 'General'} template</p>
                 <h1 className="max-w-3xl font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">{template.title}</h1>
               </div>
-              <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-500">Updated recently</span>
+              <div className="flex items-center gap-3">
+                <LikeButton templateId={template.id} initialLiked={isLiked} likeCount={likeCount} />
+                <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-500">Updated recently</span>
+              </div>
             </div>
 
             <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-2 shadow-xl shadow-slate-900/10">
@@ -85,10 +122,16 @@ export default async function TemplateDetailPage({ params }: PageProps) {
               <p className="text-sm text-slate-400">One-time purchase</p>
               <p className="mt-2 font-heading text-4xl font-extrabold tracking-tight">Rp {Number(template.price).toLocaleString('id-ID')}</p>
               <p className="mt-3 text-sm leading-6 text-slate-300">Dapatkan akses template dan mulai kustomisasi project Anda hari ini.</p>
+              
               <div className="mt-7 space-y-3">
                 <a href={`/api/checkout?templateId=${template.id}`} className="block w-full rounded-2xl bg-lime-300 px-4 py-3.5 text-center text-sm font-extrabold text-slate-950 transition hover:bg-lime-200">Buy this template <span aria-hidden="true">↗</span></a>
+                
+                {/* Interaktif Add to Cart Button */}
+                <AddToCartButton templateId={template.id} initialInCart={inCart} />
+                
                 <Link href={`/template/${template.slug}/preview`} className="block w-full rounded-2xl border border-white/20 px-4 py-3.5 text-center text-sm font-bold text-white transition hover:bg-white hover:text-slate-950">View live preview</Link>
               </div>
+
               <div className="mt-7 border-t border-white/15 pt-5 text-sm text-slate-300">
                 <div className="flex justify-between py-2"><span>License</span><span className="font-bold text-white">Personal + commercial</span></div>
                 <div className="flex justify-between py-2"><span>Format</span><span className="font-bold text-white">Ready to use</span></div>

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import FilterBar from './FilterBar';
 import Link from 'next/link';
+import { LikeButton } from '@/components/InteractiveButtons';
 
 interface PageProps {
   searchParams: Promise<{
@@ -17,22 +18,15 @@ export default async function CatalogPage({ searchParams }: PageProps) {
 
   let query = supabase.from('templates').select('*').eq('is_active', true);
 
-  // 1. Filter Pencarian Teks
   if (q) {
     query = query.or(`title.ilike.%${q}%,description.ilike.%${q}%`);
   }
-
-  // 2. Filter Kategori
   if (category && category !== 'all') {
     query = query.eq('category', category);
   }
-
-  // 3. Filter Tech Stack (ARRAY TEXT[])
   if (tech && tech !== 'all') {
     query = query.contains('tech_stack', [tech]);
   }
-
-  // 4. Sortir Data
   if (sort === 'price-asc') {
     query = query.order('price', { ascending: true });
   } else if (sort === 'price-desc') {
@@ -43,6 +37,15 @@ export default async function CatalogPage({ searchParams }: PageProps) {
 
   const { data: templates, error } = await query;
   const templateCount = templates?.length ?? 0;
+
+  // Cek data like milik user yang terautentikasi
+  const { data: { user } } = await supabase.auth.getUser();
+  let userLikesSet = new Set<string>();
+
+  if (user) {
+    const { data: likes } = await supabase.from('likes').select('template_id').eq('user_id', user.id);
+    userLikesSet = new Set(likes?.map((l) => l.template_id) || []);
+  }
 
   return (
     <main className="min-h-screen bg-[#f7f8f6] text-slate-950">
@@ -100,11 +103,16 @@ export default async function CatalogPage({ searchParams }: PageProps) {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {templates?.map((template) => (
               <article key={template.id} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl hover:shadow-slate-900/10">
-                <Link href={`/template/${template.slug}`} className="block overflow-hidden bg-slate-100">
-                  <div className="aspect-[16/10] overflow-hidden">
+                <div className="relative overflow-hidden bg-slate-100">
+                  <Link href={`/template/${template.slug}`} className="block aspect-[16/10] overflow-hidden">
                     <img src={template.thumbnail_url || '/placeholder.png'} alt={template.title} className="size-full object-cover transition duration-500 group-hover:scale-105" />
+                  </Link>
+                  {/* Floating Like Button di sudut thumbnail */}
+                  <div className="absolute right-3 top-3 z-10">
+                    <LikeButton templateId={template.id} initialLiked={userLikesSet.has(template.id)} />
                   </div>
-                </Link>
+                </div>
+
                 <div className="p-5">
                   <div className="flex items-center justify-between gap-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">
                     <span className="text-lime-700">{template.category || 'General'}</span>

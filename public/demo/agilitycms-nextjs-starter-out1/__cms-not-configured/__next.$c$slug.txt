@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[39756,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/247eb132b7f7b574.js"],"default"]
+3:I[27649,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/064e560046809859.js","/_next/static/chunks/ac9f6c079b5a9147.js","/_next/static/chunks/9abce7fc41c5cb42.js"],"default"]
+4:I[37457,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/247eb132b7f7b574.js"],"default"]
+0:{"buildId":"WazrGU_C8tHJcJeEpz2Un","rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$3","errorStyles":[],"errorScripts":[["$","script","script-0",{"src":"/_next/static/chunks/9abce7fc41c5cb42.js","async":true}]],"template":["$","$L4",null,{}],"notFound":[["$","section",null,{"className":"relative px-8 ","children":["$","div",null,{"className":"max-w-2xl mx-auto my-12 md:mt-18 lg:mt-20 prose prose-sm sm:prose lg:prose-lg xl:prose-xl","children":[["$","h1",null,{"children":"Page Not Found"}],["$","p",null,{"children":"The page you were looking for could not be found"}]]}]}],[]]}]]}],"loading":null,"isPartial":false}
