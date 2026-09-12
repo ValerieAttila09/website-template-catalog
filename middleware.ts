@@ -1,7 +1,44 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+function rewriteDemoAsset(request: NextRequest) {
+  const referer = request.headers.get('referer');
+  if (!referer) return null;
+
+  const refererPath = new URL(referer).pathname;
+  const demoMatch = refererPath.match(/^\/demo\/([^/]+)(?:\/|$)/);
+  if (!demoMatch) return null;
+
+  const demoFolder = decodeURIComponent(demoMatch[1]);
+  const url = request.nextUrl.clone();
+
+  if (url.pathname === '/_next/image') {
+    const imagePath = url.searchParams.get('url');
+    if (!imagePath?.startsWith('/images/')) return null;
+
+    url.pathname = `/demo/${encodeURIComponent(demoFolder)}${imagePath}`;
+    url.search = '';
+    return NextResponse.rewrite(url);
+  }
+
+  if (
+    url.pathname === '/favicon.ico' ||
+    url.pathname.startsWith('/icons/') ||
+    url.pathname.startsWith('/images/') ||
+    url.pathname.startsWith('/_next/static/') ||
+    url.pathname.endsWith('.txt')
+  ) {
+    url.pathname = `/demo/${encodeURIComponent(demoFolder)}${url.pathname}`;
+    return NextResponse.rewrite(url);
+  }
+
+  return null;
+}
+
 export async function middleware(request: NextRequest) {
+  const demoAssetResponse = rewriteDemoAsset(request);
+  if (demoAssetResponse) return demoAssetResponse;
+
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -55,5 +92,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  matcher: ['/((?!api).*)'],
 };
