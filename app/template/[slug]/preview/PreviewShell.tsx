@@ -2,33 +2,35 @@
 
 import Link from 'next/link'
 import { QRCodeCanvas } from 'qrcode.react'
-import { ArrowLeft, Check, CheckCircle2, Cpu, ExternalLink, Info, Monitor, QrCode, RotateCw, ShoppingBag, Smartphone, Star, Tablet, X, ZoomIn } from 'lucide-react'
+import { ArrowLeft, Check, CheckCircle2, ChevronLeft, ChevronRight, Cpu, ExternalLink, Info, Monitor, PanelRightClose, PanelRightOpen, QrCode, RotateCw, ShoppingBag, Smartphone, Star, Tablet, X, ZoomIn } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 type PreviewMode = 'desktop' | 'tablet' | 'mobile'
 type Orientation = 'portrait' | 'landscape'
+type License = 'personal' | 'commercial'
 
 const modes: Array<{ id: PreviewMode; label: string; width: string; icon: typeof Monitor }> = [
   { id: 'desktop', label: 'Desktop', width: '100%', icon: Monitor },
   { id: 'tablet', label: 'Tablet', width: '768px', icon: Tablet },
   { id: 'mobile', label: 'Mobile', width: '380px', icon: Smartphone },
-]
+] 
 
 interface PreviewShellProps {
   title: string
   slug: string
   previewUrl: string
-  formattedPrice: string
   templateId: string
   category: string
   techStack: string[]
   salesCount: number
 }
 
-export default function PreviewShell({ title, slug, previewUrl, formattedPrice, templateId, category, techStack, salesCount }: PreviewShellProps) {
+export default function PreviewShell({ title, slug, previewUrl, templateId, category, techStack, salesCount }: PreviewShellProps) {
   const [mode, setMode] = useState<PreviewMode>('desktop')
   const [orientation, setOrientation] = useState<Orientation>('portrait')
-  const [isInfoOpen, setIsInfoOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [license, setLicense] = useState<License>('personal')
+  const [isAddedToCart, setIsAddedToCart] = useState(false)
   const [isQrOpen, setIsQrOpen] = useState(false)
   const [shareUrl, setShareUrl] = useState('')
   const [isCopied, setIsCopied] = useState(false)
@@ -37,7 +39,12 @@ export default function PreviewShell({ title, slug, previewUrl, formattedPrice, 
     ? orientation === 'portrait' ? { width: '375px', height: '667px' } : { width: '667px', height: '375px' }
     : mode === 'tablet'
       ? orientation === 'portrait' ? { width: '768px', height: '1024px' } : { width: '1024px', height: '768px' }
-      : { width: '100%', height: 'calc(100vh - 154px)' }
+      : { width: '100%', height: '100vh' }
+  const licensePrices: Record<License, string> = {
+    personal: 'Rp 165.000',
+    commercial: 'Rp 450.000',
+  }
+  const checkoutUrl = `/api/checkout?templateId=${templateId}&license=${license}`
 
   useEffect(() => {
     if (!isQrOpen) {
@@ -55,19 +62,15 @@ export default function PreviewShell({ title, slug, previewUrl, formattedPrice, 
   }, [isQrOpen])
 
   useEffect(() => {
-    if (!isInfoOpen) {
-      return
-    }
-
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setIsInfoOpen(false)
+        setIsSidebarOpen(false)
       }
     }
 
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [isInfoOpen])
+  }, [])
 
   const openQrPopover = () => {
     setShareUrl(window.location.href)
@@ -79,6 +82,11 @@ export default function PreviewShell({ title, slug, previewUrl, formattedPrice, 
     await navigator.clipboard.writeText(shareUrl)
     setIsCopied(true)
     window.setTimeout(() => setIsCopied(false), 2000)
+  }
+
+  const addToCart = () => {
+    setIsAddedToCart(true)
+    window.setTimeout(() => setIsAddedToCart(false), 2200)
   }
 
   return (
@@ -95,14 +103,14 @@ export default function PreviewShell({ title, slug, previewUrl, formattedPrice, 
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2 sm:gap-4">
-            <button type="button" onClick={() => setIsInfoOpen(true)} title="Info & Tech Stack" aria-label="Info & Tech Stack" aria-expanded={isInfoOpen} className="grid size-9 place-items-center rounded-xl bg-white/10 text-slate-300 transition hover:bg-white/20 hover:text-white">
+            <button type="button" onClick={() => setIsSidebarOpen(true)} title="Info & Tech Stack" aria-label="Info & Tech Stack" aria-expanded={isSidebarOpen} className="grid size-9 place-items-center rounded-xl bg-white/10 text-slate-300 transition hover:bg-white/20 hover:text-white">
               <Info className="size-4" />
             </button>
             <button type="button" onClick={openQrPopover} title="Uji di HP" aria-label="Uji di HP" aria-expanded={isQrOpen} className="grid size-9 place-items-center rounded-xl bg-white/10 text-slate-300 transition hover:bg-white/20 hover:text-white">
               <QrCode className="size-4" />
             </button>
-            <span className="hidden text-sm font-bold text-lime-300 md:block">{formattedPrice}</span>
-            <a href={`/api/checkout?templateId=${templateId}`} className="rounded-xl bg-lime-300 px-3 py-2 text-xs font-extrabold text-slate-950 transition hover:bg-lime-200 sm:px-4 sm:py-2.5">Buy template <span aria-hidden="true">↗</span></a>
+            <span className="hidden text-sm font-bold text-lime-300 md:block">{licensePrices[license]}</span>
+            <a href={checkoutUrl} className="rounded-xl bg-lime-300 px-3 py-2 text-xs font-extrabold text-slate-950 transition hover:bg-lime-200 sm:px-4 sm:py-2.5">Buy template <span aria-hidden="true">↗</span></a>
           </div>
         </div>
       </header>
@@ -131,67 +139,79 @@ export default function PreviewShell({ title, slug, previewUrl, formattedPrice, 
         </div>
       )}
 
-      <div className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ${isInfoOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`} aria-hidden={!isInfoOpen}>
-        <button type="button" aria-label="Tutup Info & Tech Stack" className="size-full cursor-default" onClick={() => setIsInfoOpen(false)} />
-      </div>
-      <aside role="dialog" aria-modal="true" aria-labelledby="preview-info-title" className={`fixed inset-y-0 right-0 z-50 flex w-[min(25rem,calc(100vw-1rem))] flex-col border-l border-white/10 bg-slate-950 p-5 text-white shadow-2xl shadow-black/50 transition-transform duration-300 ${isInfoOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-5">
-          <div>
-            <p className="mb-1 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.16em] text-lime-300"><Cpu className="size-3.5" /> Template details</p>
-            <h2 id="preview-info-title" className="text-lg font-extrabold">Info & Tech Stack</h2>
-          </div>
-          <button type="button" onClick={() => setIsInfoOpen(false)} aria-label="Tutup" className="grid size-8 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-white/10 hover:text-white"><X className="size-4" /></button>
-        </div>
-
-        <div className="flex-1 space-y-6 overflow-y-auto py-5">
-          <section>
-            <h3 className="mb-3 text-xs font-bold uppercase tracking-[.14em] text-slate-400">Tech Stack</h3>
-            <div className="flex flex-wrap gap-2">
-              {(techStack.length > 0 ? techStack : ['Next.js', 'React', 'Tailwind CSS']).map((technology) => <span key={technology} className="rounded-lg border border-lime-300/20 bg-lime-300/10 px-2.5 py-1.5 text-xs font-bold text-lime-200">{technology}</span>)}
-            </div>
-          </section>
-
-          <section>
-            <h3 className="mb-3 text-xs font-bold uppercase tracking-[.14em] text-slate-400">Spesifikasi</h3>
-            <div className="divide-y divide-white/10 rounded-xl border border-white/10 bg-white/[0.03]">
-              <div className="flex items-center justify-between gap-3 px-4 py-3"><span className="text-xs text-slate-400">Kategori</span><span className="text-right text-xs font-bold text-white">{category}</span></div>
-              <div className="flex items-center justify-between gap-3 px-4 py-3"><span className="text-xs text-slate-400">Lisensi</span><span className="text-xs font-bold text-white">Commercial</span></div>
-              <div className="flex items-center justify-between gap-3 px-4 py-3"><span className="flex items-center gap-2 text-xs text-slate-400"><ShoppingBag className="size-3.5" /> Terjual</span><span className="text-xs font-bold text-white">{salesCount.toLocaleString('id-ID')}</span></div>
-              <div className="flex items-center justify-between gap-3 px-4 py-3"><span className="flex items-center gap-2 text-xs text-slate-400"><Star className="size-3.5 text-lime-300" /> Rating</span><span className="text-xs font-bold text-white">5.0 / 5</span></div>
-            </div>
-          </section>
-
-          <div className="grid gap-2 sm:grid-cols-2">
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3"><CheckCircle2 className="mb-2 size-4 text-lime-300" /><p className="text-xs font-bold text-white">Updates & support</p><p className="mt-1 text-[11px] leading-4 text-slate-500">Includes updates & support</p></div>
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3"><CheckCircle2 className="mb-2 size-4 text-lime-300" /><p className="text-xs font-bold text-white">Browser ready</p><p className="mt-1 text-[11px] leading-4 text-slate-500">100% Responsive Ready</p></div>
-          </div>
-        </div>
-
-        <div className="space-y-3 border-t border-white/10 pt-5">
-          <a href={`/api/checkout?templateId=${templateId}`} className="block rounded-xl bg-lime-300 px-4 py-3 text-center text-sm font-extrabold text-slate-950 transition hover:bg-lime-200">Beli Template Ini</a>
-          <Link href={`/template/${slug}`} className="block text-center text-xs font-bold text-slate-400 transition hover:text-white">Lihat halaman detail</Link>
-        </div>
-      </aside>
-
-      <section className="relative flex min-h-0 flex-1 items-start justify-center overflow-auto bg-[#1c2523]">
+      <section className="relative flex min-h-0 flex-1 items-start justify-center overflow-hidden bg-[#1c2523]">
         <div className={`relative flex min-h-full w-full justify-center ${mode === 'desktop' ? 'py-0' : 'py-3'}`}>
-          <div className={`relative shrink-0 overflow-hidden bg-white shadow-2xl shadow-black/40 transition-all duration-300 ease-in-out ${mode === 'mobile' ? 'rounded-[2rem] border-[6px] border-slate-700' : mode === 'tablet' ? 'rounded-xl border-4 border-slate-700' : 'rounded-none'}`} style={{ width: frameDimensions.width, height: frameDimensions.height, maxWidth: '100%' }}>
+          <div
+            className={`relative shrink-0 overflow-auto bg-white shadow-2xl shadow-black/40 transition-all duration-300 ease-in-out ${mode === 'mobile' ? 'rounded-[2rem] border-[6px] border-slate-700' : mode === 'tablet' ? 'rounded-xl border-4 border-slate-700' : 'rounded-none'}`}
+            style={{
+              width: frameDimensions.width,
+              height: frameDimensions.height,
+              maxWidth: '100%'
+            }}>
             {mode === 'mobile' && <div className="absolute left-1/2 top-1.5 z-10 h-4 w-24 -translate-x-1/2 rounded-full bg-slate-900" aria-hidden="true" />}
             <iframe src={previewUrl} title={`${title} ${activeMode.label} preview`} className="absolute inset-0 size-full border-0 bg-white" sandbox="allow-scripts allow-same-origin allow-forms" />
           </div>
         </div>
         <div className="pointer-events-none fixed bottom-5 left-1/2 hidden -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-slate-950/80 px-4 py-2 text-[10px] font-semibold text-slate-400 shadow-xl backdrop-blur md:flex"><ZoomIn className="size-3.5 text-lime-300" /> Preview viewport mengikuti ukuran device yang dipilih</div>
-        <div className="w-auto space-y-2 min-h-full p-3 bg-[#111817] border-l border-white/10 pt-3">
-          <div className="flex items-center gap-1 rounded-lg border border-white/15 bg-white/5 p-1">
-            {modes.map((item) => {
-              const Icon = item.icon
-              const isActive = item.id === mode
-              return <button key={item.id} type="button" onClick={() => setMode(item.id)} aria-pressed={isActive} className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 text-[11px] font-bold transition sm:px-3 ${isActive ? 'bg-white text-slate-950 shadow-sm' : 'text-slate-400 hover:bg-white/10 hover:text-white'}`}><Icon className="size-3.5" /> <span className="hidden sm:inline">{item.label}</span></button>
-            })}
-          </div>
-          {mode !== 'desktop' && <button type="button" onClick={() => setOrientation((current) => current === 'portrait' ? 'landscape' : 'portrait')} aria-pressed={orientation === 'landscape'} title={`Ubah ke mode ${orientation === 'portrait' ? 'landscape' : 'portrait'}`} className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-2.5 py-2 text-[11px] font-bold transition-all duration-300 ease-in-out ${orientation === 'landscape' ? 'border-lime-300/40 bg-lime-300 text-slate-950' : 'border-white/15 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'}`}><RotateCw className="size-3.5" /> <span className="hidden sm:inline">{orientation === 'portrait' ? 'Landscape' : 'Portrait'}</span></button>}
-          <div className="flex items-center gap-3 text-[10px] font-semibold text-slate-500"><span className="hidden sm:inline">Viewport: {frameDimensions.width} x {frameDimensions.height}</span><a href={previewUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-slate-300 hover:text-white"><ExternalLink className="size-3.5" /> Open separately</a></div>
-        </div>
+        <aside className={`relative flex h-full shrink-0 flex-col border-l border-white/10 bg-[#111817] transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-80' : 'w-12'}`} aria-label="Preview controls and template information">
+          {/* <button type="button" onClick={() => setIsSidebarOpen((open) => !open)} aria-label={isSidebarOpen ? 'Tutup panel kontrol' : 'Buka panel kontrol'} title={isSidebarOpen ? 'Tutup panel kontrol' : 'Buka panel kontrol'} className="absolute -left-4 top-4 z-10 grid size-8 place-items-center rounded-full border border-white/10 bg-slate-950 text-slate-300 shadow-lg transition hover:border-lime-300/40 hover:text-lime-300">
+            {isSidebarOpen ? <PanelRightClose className="size-4" /> : <PanelRightOpen className="size-4" />}
+          </button> */}
+
+          {isSidebarOpen ? <>
+            <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
+              <div><p className="flex items-center gap-2 text-xs font-extrabold text-white"><Cpu className="size-3.5 text-lime-300" /> Preview controls</p><p className="mt-1 text-[10px] text-slate-500">Shape the viewport and explore details</p></div>
+              <button type="button" onClick={() => setIsSidebarOpen(false)} aria-label="Tutup panel" className="grid size-7 place-items-center rounded-lg text-slate-500 transition hover:bg-white/10 hover:text-white"><ChevronRight className="size-4" /></button>
+            </div>
+            <div className="preview-scrollbar flex-1 space-y-5 overflow-y-auto p-4 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb:hover]:bg-lime-300/40 [&::-webkit-scrollbar-track]:bg-transparent">
+              <section>
+                <p className="mb-2 text-[10px] font-bold uppercase tracking-[.14em] text-slate-500">Device & viewport</p>
+                <div className="grid grid-cols-3 gap-1 rounded-xl border border-white/10 bg-white/[0.03] p-1">
+                  {modes.map((item) => {
+                    const Icon = item.icon
+                    const isActive = item.id === mode
+                    return <button key={item.id} type="button" onClick={() => setMode(item.id)} aria-pressed={isActive} className={`flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-2 text-[10px] font-bold transition ${isActive ? 'bg-lime-300 text-slate-950 shadow-sm' : 'text-slate-500 hover:bg-white/10 hover:text-white'}`}><Icon className="size-4" /><span>{item.label}</span></button>
+                  })}
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  {mode !== 'desktop' && <button type="button" onClick={() => setOrientation((current) => current === 'portrait' ? 'landscape' : 'portrait')} aria-pressed={orientation === 'landscape'} className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border px-2 py-2 text-[10px] font-bold transition ${orientation === 'landscape' ? 'border-lime-300/40 bg-lime-300 text-slate-950' : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'}`}><RotateCw className="size-3.5" />{orientation === 'portrait' ? 'Landscape' : 'Portrait'}</button>}
+                  <span className="rounded-lg border border-white/10 bg-white/[0.03] px-2 py-2 text-[10px] font-semibold text-slate-500">{frameDimensions.width} x {frameDimensions.height}</span>
+                </div>
+                <a href={previewUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold text-slate-400 transition hover:text-lime-300"><ExternalLink className="size-3" /> Open separately</a>
+              </section>
+
+              <section>
+                <div className="mb-2 flex items-center justify-between"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-slate-500">Choose your license</p><span className="text-[10px] font-bold text-lime-300">{licensePrices[license]}</span></div>
+                <div className="space-y-2">
+                  {(['personal', 'commercial'] as License[]).map((item) => <label key={item} className={`flex cursor-pointer items-center justify-between rounded-xl border p-3 transition ${license === item ? 'border-lime-300/50 bg-lime-300/10' : 'border-white/10 bg-white/[0.03] hover:border-white/20'}`}><span className="flex items-center gap-2"><input type="radio" name="license" value={item} checked={license === item} onChange={() => setLicense(item)} className="accent-lime-300" /><span><span className="block text-xs font-bold text-white">{item === 'personal' ? 'Personal License' : 'Commercial License'}</span><span className="mt-0.5 block text-[10px] text-slate-500">{item === 'personal' ? 'For one personal project' : 'For client and business work'}</span></span></span><span className="text-xs font-extrabold text-lime-300">{licensePrices[item]}</span></label>)}
+                </div>
+              </section>
+
+              <section>
+                <p className="mb-2 text-[10px] font-bold uppercase tracking-[.14em] text-slate-500">What is included</p>
+                <div className="space-y-2">
+                  {['Next.js 16 & App Router Ready', 'Tailwind CSS Styling', '100% Fully Responsive Layout', '99+ Speed & SEO Lighthouse Score', 'Figma Design File Included'].map((feature) => <div key={feature} className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5 text-[11px] font-semibold text-slate-300"><CheckCircle2 className="size-3.5 shrink-0 text-lime-300" />{feature}</div>)}
+                </div>
+              </section>
+
+              <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="mb-3 flex items-center justify-between"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-slate-500">Template snapshot</p><span className="text-[10px] font-bold text-slate-500">{salesCount.toLocaleString('id-ID')} sold</span></div>
+                <p className="text-xs font-bold text-white">{category}</p>
+                <div className="mt-3 flex flex-wrap gap-1.5">{(techStack.length > 0 ? techStack : ['Next.js', 'React', 'Tailwind CSS']).map((technology) => <span key={technology} className="rounded-md border border-lime-300/20 bg-lime-300/10 px-2 py-1 text-[10px] font-bold text-lime-200">{technology}</span>)}</div>
+              </section>
+
+              <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="flex items-center justify-between"><div><p className="text-sm font-extrabold text-white">Studio Pixel</p><span className="mt-1 inline-flex rounded-full bg-lime-300/15 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-lime-300">Pro Author</span></div><div className="text-right"><p className="flex items-center gap-1 text-sm font-extrabold text-white"><Star className="size-3.5 fill-lime-300 text-lime-300" /> 4.9/5</p><p className="mt-1 text-[10px] text-slate-500">48 reviews</p></div></div>
+                <blockquote className="mt-4 border-l-2 border-lime-300/50 pl-3 text-[11px] italic leading-5 text-slate-400">“Template paling rapi dan kodenya mudah disesuaikan. Setup hanya butuh 5 menit!”<footer className="mt-2 not-italic font-bold text-slate-300">Alex R. <span className="font-normal text-slate-500">· Verified Buyer</span></footer></blockquote>
+              </section>
+            </div>
+            <div className="space-y-2 border-t border-white/10 p-4">
+              <a href={checkoutUrl} className="block rounded-xl bg-lime-300 px-4 py-3 text-center text-xs font-extrabold text-slate-950 transition hover:bg-lime-200">Buy Template · {licensePrices[license]}</a>
+              <button type="button" onClick={addToCart} className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-xs font-bold text-slate-200 transition hover:bg-white/10">{isAddedToCart ? <Check className="size-3.5 text-lime-300" /> : <ShoppingBag className="size-3.5" />}{isAddedToCart ? 'Added to Collection' : 'Add to Cart / Collection'}</button>
+              <Link href={`/template/${slug}`} className="block pt-1 text-center text-[10px] font-bold text-slate-500 transition hover:text-white">View full template details</Link>
+            </div>
+          </> : <div className="flex h-full flex-col items-center gap-4 pt-4"><button type="button" onClick={() => setIsSidebarOpen(true)} aria-label="Buka panel kontrol" className="grid size-8 place-items-center rounded-lg bg-white/5 text-slate-400 transition hover:bg-lime-300 hover:text-slate-950"><ChevronLeft className="size-4" /></button><div className="flex flex-col items-center gap-3 text-slate-500"><Monitor className="size-4" /><ShoppingBag className="size-4" /><Info className="size-4" /></div></div>}
+        </aside>
       </section>
     </main>
   )
