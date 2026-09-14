@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowLeft, ExternalLink, Monitor, Smartphone, Tablet, ZoomIn } from 'lucide-react'
-import { useState } from 'react'
+import { QRCodeCanvas } from 'qrcode.react'
+import { ArrowLeft, Check, ExternalLink, Monitor, QrCode, Smartphone, Tablet, X, ZoomIn } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 type PreviewMode = 'desktop' | 'tablet' | 'mobile'
 
@@ -22,7 +23,37 @@ interface PreviewShellProps {
 
 export default function PreviewShell({ title, slug, previewUrl, formattedPrice, templateId }: PreviewShellProps) {
   const [mode, setMode] = useState<PreviewMode>('desktop')
+  const [isQrOpen, setIsQrOpen] = useState(false)
+  const [shareUrl, setShareUrl] = useState('')
+  const [isCopied, setIsCopied] = useState(false)
   const activeMode = modes.find((item) => item.id === mode) ?? modes[0]
+
+  useEffect(() => {
+    if (!isQrOpen) {
+      return
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsQrOpen(false)
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [isQrOpen])
+
+  const openQrPopover = () => {
+    setShareUrl(window.location.href)
+    setIsCopied(false)
+    setIsQrOpen(true)
+  }
+
+  const copyShareUrl = async () => {
+    await navigator.clipboard.writeText(shareUrl)
+    setIsCopied(true)
+    window.setTimeout(() => setIsCopied(false), 2000)
+  }
 
   return (
     <main className="flex h-screen w-screen flex-col overflow-hidden bg-[#111817] text-white">
@@ -38,11 +69,38 @@ export default function PreviewShell({ title, slug, previewUrl, formattedPrice, 
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2 sm:gap-4">
+            <button type="button" onClick={openQrPopover} title="Uji di HP" aria-label="Uji di HP" aria-expanded={isQrOpen} className="grid size-9 place-items-center rounded-xl bg-white/10 text-slate-300 transition hover:bg-white/20 hover:text-white">
+              <QrCode className="size-4" />
+            </button>
             <span className="hidden text-sm font-bold text-lime-300 md:block">{formattedPrice}</span>
             <a href={`/api/checkout?templateId=${templateId}`} className="rounded-xl bg-lime-300 px-3 py-2 text-xs font-extrabold text-slate-950 transition hover:bg-lime-200 sm:px-4 sm:py-2.5">Buy template <span aria-hidden="true">↗</span></a>
           </div>
         </div>
       </header>
+
+      {isQrOpen && (
+        <div className="fixed inset-0 z-40" role="presentation">
+          <button type="button" aria-label="Tutup Uji di HP" className="absolute inset-0 size-full cursor-default bg-black/30" onClick={() => setIsQrOpen(false)} />
+          <div role="dialog" aria-modal="true" aria-labelledby="qr-preview-title" className="absolute right-4 top-[4.75rem] w-[min(22rem,calc(100vw-2rem))] rounded-2xl border border-white/10 bg-[#111817] p-5 text-center shadow-2xl shadow-black/50 sm:right-6">
+            <div className="mb-4 flex items-start justify-between gap-3 text-left">
+              <div>
+                <h2 id="qr-preview-title" className="text-sm font-extrabold text-white">Uji di HP</h2>
+                <p className="mt-1 text-xs leading-5 text-slate-400">Pindai kode QR ini menggunakan kamera HP untuk mencoba template langsung di perangkat fisik kamu.</p>
+              </div>
+              <button type="button" onClick={() => setIsQrOpen(false)} aria-label="Tutup" className="grid size-7 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-white/10 hover:text-white">
+                <X className="size-4" />
+              </button>
+            </div>
+            <div className="mx-auto flex size-[196px] items-center justify-center rounded-xl bg-white p-2">
+              {shareUrl && <QRCodeCanvas value={shareUrl} size={180} bgColor="#ffffff" fgColor="#111817" level="M" includeMargin={false} />}
+            </div>
+            <button type="button" onClick={copyShareUrl} disabled={!shareUrl} className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50">
+              {isCopied ? <Check className="size-3.5 text-lime-300" /> : <ExternalLink className="size-3.5" />}
+              {isCopied ? 'Tersalin' : 'Salin Link'}
+            </button>
+          </div>
+        </div>
+      )}
 
       <section className="relative flex min-h-0 flex-1 items-start justify-center overflow-auto bg-[#1c2523]">
         <div className={`relative flex min-h-full w-full justify-center ${mode === 'desktop' ? 'py-0' : 'py-3'}`}>
