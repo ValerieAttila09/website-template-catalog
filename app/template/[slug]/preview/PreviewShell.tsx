@@ -21,7 +21,7 @@ function SafariMockup({ children, className = '', url = 'preview.local' }: Mocku
   const displayUrl = url.replace(/^https?:\/\//, '').split('/')[0] || 'preview.local'
 
   return (
-    <div className={`flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-600/80 bg-slate-200 p-1.5 shadow-2xl drop-shadow-2xl ${className}`}>
+    <div className={`flex h-full w-full flex-col overflow-hidden rounded-none border border-slate-600/80 bg-slate-200 p-1.5 shadow-2xl drop-shadow-2xl ${className}`}>
       <div className="flex h-8 shrink-0 items-center gap-1.5 rounded-t-lg border-b border-slate-300 bg-slate-100 px-3">
         <span className="size-2.5 rounded-full bg-[#ff5f57]" />
         <span className="size-2.5 rounded-full bg-[#febc2e]" />
@@ -124,7 +124,7 @@ export default function PreviewShell({ title, slug, previewUrl, templateId, cate
   }, [])
 
   const openQrPopover = () => {
-    setShareUrl(window.location.href)
+    setShareUrl(new URL(previewUrl, window.location.origin).toString())
     setIsCopied(false)
     setIsQrOpen(true)
   }
