@@ -2,10 +2,11 @@
 
 import Link from 'next/link'
 import { QRCodeCanvas } from 'qrcode.react'
-import { ArrowLeft, Check, ExternalLink, Monitor, QrCode, Smartphone, Tablet, X, ZoomIn } from 'lucide-react'
+import { ArrowLeft, Check, ExternalLink, Monitor, QrCode, RotateCw, Smartphone, Tablet, X, ZoomIn } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 type PreviewMode = 'desktop' | 'tablet' | 'mobile'
+type Orientation = 'portrait' | 'landscape'
 
 const modes: Array<{ id: PreviewMode; label: string; width: string; icon: typeof Monitor }> = [
   { id: 'desktop', label: 'Desktop', width: '100%', icon: Monitor },
@@ -23,10 +24,16 @@ interface PreviewShellProps {
 
 export default function PreviewShell({ title, slug, previewUrl, formattedPrice, templateId }: PreviewShellProps) {
   const [mode, setMode] = useState<PreviewMode>('desktop')
+  const [orientation, setOrientation] = useState<Orientation>('portrait')
   const [isQrOpen, setIsQrOpen] = useState(false)
   const [shareUrl, setShareUrl] = useState('')
   const [isCopied, setIsCopied] = useState(false)
   const activeMode = modes.find((item) => item.id === mode) ?? modes[0]
+  const frameDimensions = mode === 'mobile'
+    ? orientation === 'portrait' ? { width: '375px', height: '667px' } : { width: '667px', height: '375px' }
+    : mode === 'tablet'
+      ? orientation === 'portrait' ? { width: '768px', height: '1024px' } : { width: '1024px', height: '768px' }
+      : { width: '100%', height: 'calc(100vh - 154px)' }
 
   useEffect(() => {
     if (!isQrOpen) {
@@ -104,7 +111,7 @@ export default function PreviewShell({ title, slug, previewUrl, formattedPrice, 
 
       <section className="relative flex min-h-0 flex-1 items-start justify-center overflow-auto bg-[#1c2523]">
         <div className={`relative flex min-h-full w-full justify-center ${mode === 'desktop' ? 'py-0' : 'py-3'}`}>
-          <div className={`relative  shrink-0 overflow-hidden bg-white shadow-2xl shadow-black/40 transition-[width] duration-300 ${mode === 'mobile' ? 'rounded-[2rem] border-[6px] border-slate-700' : mode === 'tablet' ? 'rounded-xl border-4 border-slate-700' : 'rounded-none'}`} style={{ width: activeMode.width, maxWidth: '100%', minHeight: 'calc(100vh - 154px)' }}>
+          <div className={`relative shrink-0 overflow-hidden bg-white shadow-2xl shadow-black/40 transition-all duration-300 ease-in-out ${mode === 'mobile' ? 'rounded-[2rem] border-[6px] border-slate-700' : mode === 'tablet' ? 'rounded-xl border-4 border-slate-700' : 'rounded-none'}`} style={{ width: frameDimensions.width, height: frameDimensions.height, maxWidth: '100%' }}>
             {mode === 'mobile' && <div className="absolute left-1/2 top-1.5 z-10 h-4 w-24 -translate-x-1/2 rounded-full bg-slate-900" aria-hidden="true" />}
             <iframe src={previewUrl} title={`${title} ${activeMode.label} preview`} className="absolute inset-0 size-full border-0 bg-white" sandbox="allow-scripts allow-same-origin allow-forms" />
           </div>
@@ -118,7 +125,8 @@ export default function PreviewShell({ title, slug, previewUrl, formattedPrice, 
               return <button key={item.id} type="button" onClick={() => setMode(item.id)} aria-pressed={isActive} className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 text-[11px] font-bold transition sm:px-3 ${isActive ? 'bg-white text-slate-950 shadow-sm' : 'text-slate-400 hover:bg-white/10 hover:text-white'}`}><Icon className="size-3.5" /> <span className="hidden sm:inline">{item.label}</span></button>
             })}
           </div>
-          <div className="flex items-center gap-3 text-[10px] font-semibold text-slate-500"><span className="hidden sm:inline">Viewport: {activeMode.width}</span><a href={previewUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-slate-300 hover:text-white"><ExternalLink className="size-3.5" /> Open separately</a></div>
+          {mode !== 'desktop' && <button type="button" onClick={() => setOrientation((current) => current === 'portrait' ? 'landscape' : 'portrait')} aria-pressed={orientation === 'landscape'} title={`Ubah ke mode ${orientation === 'portrait' ? 'landscape' : 'portrait'}`} className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg border px-2.5 py-2 text-[11px] font-bold transition-all duration-300 ease-in-out ${orientation === 'landscape' ? 'border-lime-300/40 bg-lime-300 text-slate-950' : 'border-white/15 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'}`}><RotateCw className="size-3.5" /> <span className="hidden sm:inline">{orientation === 'portrait' ? 'Landscape' : 'Portrait'}</span></button>}
+          <div className="flex items-center gap-3 text-[10px] font-semibold text-slate-500"><span className="hidden sm:inline">Viewport: {frameDimensions.width} x {frameDimensions.height}</span><a href={previewUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-slate-300 hover:text-white"><ExternalLink className="size-3.5" /> Open separately</a></div>
         </div>
       </section>
     </main>
