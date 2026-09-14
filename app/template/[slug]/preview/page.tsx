@@ -16,7 +16,7 @@ export default async function LivePreviewPage({ params }: PreviewPageProps) {
     notFound()
   }
 
-  const previewUrl = template.previewUrl || `/demo/${resolvedParams.slug}/index.html`
+  const previewUrl = template.previewUrl || `/demo/${encodeURIComponent(template.filePath)}/index.html`
 
   return <PreviewShell title={template.title} slug={template.slug} previewUrl={previewUrl} templateId={template.id} category={template.category || 'Website Template'} techStack={template.techStack || []} salesCount={template.salesCount} />
 }
