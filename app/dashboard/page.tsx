@@ -26,8 +26,8 @@ export default async function DashboardPage() {
 				<div className="flex min-h-screen">
 					<aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white lg:flex lg:flex-col">
 						<div className="flex h-20 items-center gap-3 border-b border-slate-100 px-6">
-							<span className="grid size-9 place-items-center rounded-xl bg-slate-950 font-heading text-sm font-extrabold text-lime-300">T</span>
-							<span className="font-heading text-lg font-extrabold tracking-tight">Template Haven</span>
+							<span className="grid size-9 place-items-center rounded-xl bg-[#505F62] font-heading text-sm font-extrabold text-[#FFCF00]">U</span>
+							<span className="font-heading text-lg font-extrabold tracking-tight">UPLIFT</span>
 						</div>
 						<div className="flex-1 px-4 py-6">
 							<p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[.18em] text-slate-400">Workspace</p>

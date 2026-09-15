@@ -12,39 +12,39 @@ export default async function HomePage() {
   const heroTemplate = templates[0]
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f7f8f6] text-slate-950">
-      <header className="relative z-10 border-b border-slate-200/70 bg-[#f7f8f6]/90 backdrop-blur">
+    <main className="min-h-screen overflow-hidden bg-[#F9F2E7] text-[#505F62]">
+      <header className="relative z-10 border-b border-[#D0BDA8] bg-[#F9F2E7]/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
           <Link href="/" className="flex items-center gap-3">
-            <span className="grid size-9 place-items-center rounded-xl bg-slate-950 font-heading text-sm font-extrabold text-lime-300">T</span>
-            <span className="font-heading text-lg font-extrabold tracking-tight">Template Haven</span>
+            <span className="grid size-9 place-items-center rounded-xl bg-[#505F62] font-heading text-sm font-extrabold text-[#FFCF00]">U</span>
+            <span><span className="block font-heading text-lg font-extrabold tracking-tight">UPLIFT</span><span className="hidden text-[9px] font-semibold tracking-[.14em] text-[#F18744] sm:block">LIFT YOUR BRAND HIGHER</span></span>
           </Link>
-          <nav className="hidden items-center gap-8 text-sm font-semibold text-slate-500 md:flex">
-            <Link href="#collection" className="transition hover:text-slate-950">Collection</Link>
-            <Link href="#why-us" className="transition hover:text-slate-950">Why us</Link>
-            <Link href="#process" className="transition hover:text-slate-950">How it works</Link>
+          <nav className="hidden items-center gap-8 text-sm font-semibold text-[#778083] md:flex">
+            <Link href="#collection" className="transition hover:text-[#F18744]">Collection</Link>
+            <Link href="#why-us" className="transition hover:text-[#F18744]">Why us</Link>
+            <Link href="#process" className="transition hover:text-[#F18744]">How it works</Link>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/dashboard" className="hidden text-sm font-bold text-slate-600 transition hover:text-slate-950 sm:block">Sign in</Link>
-            <Link href="/catalog" className="rounded-full bg-slate-950 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-lime-500 hover:text-slate-950">Browse catalog</Link>
-            <button type="button" aria-label="Open menu" className="grid size-10 place-items-center rounded-full border border-slate-200 md:hidden"><Menu className="size-4" /></button>
+            <Link href="/dashboard" className="hidden text-sm font-bold text-[#778083] transition hover:text-[#F18744] sm:block">Sign in</Link>
+            <Link href="/catalog" className="rounded-full bg-[#F18744] px-4 py-2.5 text-xs font-bold text-[#F9F2E7] transition hover:bg-[#FFCF00] hover:text-[#505F62]">Browse catalog</Link>
+            <button type="button" aria-label="Open menu" className="grid size-10 place-items-center rounded-full border border-[#D0BDA8] md:hidden"><Menu className="size-4" /></button>
           </div>
         </div>
       </header>
 
-      <section className="relative border-b border-slate-200/70 px-5 pb-16 pt-14 lg:px-8 lg:pb-24 lg:pt-20">
-        <div className="absolute -left-32 top-20 size-80 rounded-full bg-lime-200/50 blur-3xl" />
-        <div className="absolute -right-32 bottom-0 size-96 rounded-full bg-sky-100/80 blur-3xl" />
+      <section className="relative border-b border-[#D0BDA8] px-5 pb-16 pt-14 lg:px-8 lg:pb-24 lg:pt-20">
+        <div className="absolute -left-32 top-20 size-80 rounded-full bg-[radial-gradient(circle,#FFCF00_0%,#F18744_55%,transparent_72%)] opacity-35 blur-3xl" />
+        <div className="absolute -right-32 bottom-0 size-96 rounded-full bg-[#F18744]/15 blur-3xl" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[.9fr_1.1fr] lg:gap-20">
           <div>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-600 shadow-sm">
               <Sparkles className="size-3.5 text-lime-600" /> Curated for ambitious launches
             </div>
-            <h1 className="max-w-2xl font-heading text-5xl font-extrabold leading-[.98] tracking-tight sm:text-6xl lg:text-7xl">Your next great website starts <span className="text-lime-600">here.</span></h1>
+              <p className="mb-4 text-xs font-bold uppercase tracking-[.22em] text-[#F18744]">LIFT YOUR BRAND HIGHER</p><h1 className="max-w-2xl font-heading text-5xl font-extrabold leading-[.98] tracking-tight sm:text-6xl lg:text-7xl">Your next great website starts <span className="text-[#F18744]">here.</span></h1>
             <p className="mt-7 max-w-xl text-base leading-7 text-slate-600 sm:text-lg">Template website premium yang siap dipakai, mudah dikustomisasi, dan dirancang untuk membuat brand Anda terlihat meyakinkan sejak first click.</p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
-              <Link href="/catalog" className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3.5 text-sm font-extrabold text-white transition hover:bg-lime-500 hover:text-slate-950">Explore templates <ArrowRight className="size-4" /></Link>
-              <Link href="#process" className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-3.5 text-sm font-bold text-slate-700 transition hover:border-slate-950"><Play className="size-3.5 fill-current" /> See how it works</Link>
+              <Link href="/catalog" className="inline-flex items-center gap-2 rounded-full bg-[#F18744] px-5 py-3.5 text-sm font-extrabold text-[#F9F2E7] transition hover:bg-[#FFCF00] hover:text-[#505F62]">Explore templates <ArrowRight className="size-4" /></Link>
+              <Link href="#process" className="inline-flex items-center gap-2 rounded-full border border-[#D0BDA8] bg-[#F9F2E7] px-5 py-3.5 text-sm font-bold text-[#505F62] transition hover:border-[#F18744]"><Play className="size-3.5 fill-current" /> See how it works</Link>
             </div>
             <div className="mt-10 flex items-center gap-4 text-sm text-slate-500">
               <div className="flex -space-x-2"><span className="grid size-8 place-items-center rounded-full border-2 border-[#f7f8f6] bg-amber-200 text-xs font-bold">AS</span><span className="grid size-8 place-items-center rounded-full border-2 border-[#f7f8f6] bg-sky-200 text-xs font-bold">RP</span><span className="grid size-8 place-items-center rounded-full border-2 border-[#f7f8f6] bg-rose-200 text-xs font-bold">DN</span></div>
@@ -59,8 +59,8 @@ export default async function HomePage() {
             <div className="absolute -bottom-5 -left-4 z-10 rounded-2xl border border-white/80 bg-slate-950 px-4 py-3 text-white shadow-xl sm:-left-8">
               <div className="flex items-center gap-3"><Star className="size-5 fill-lime-300 text-lime-300" /><div><p className="text-sm font-extrabold">4.9 / 5.0</p><p className="text-[10px] text-slate-400">Loved by builders</p></div></div>
             </div>
-            <div className="rounded-[2rem] border border-white bg-white/70 p-2 shadow-2xl shadow-slate-900/15 backdrop-blur sm:p-3">
-              <div className="overflow-hidden rounded-[1.5rem] bg-slate-100">
+            <div className="rounded-[2rem] border border-[#D0BDA8] bg-[#F9F2E7]/70 p-2 shadow-2xl shadow-[#505F62]/15 backdrop-blur sm:p-3">
+              <div className="overflow-hidden rounded-[1.5rem] bg-[#F1E6D8]">
                 {heroTemplate ? <img src={heroTemplate.thumbnailUrl || '/placeholder.png'} alt={heroTemplate.title} className="aspect-[16/11] w-full object-cover" /> : <div className="aspect-[16/11] bg-gradient-to-br from-sky-100 via-white to-lime-100" />}
               </div>
               <div className="flex items-center justify-between px-3 py-3 sm:px-5 sm:py-4"><div><p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Featured template</p><p className="mt-1 font-heading text-base font-extrabold sm:text-lg">{heroTemplate?.title || 'Your next project'}</p></div><Link href={heroTemplate ? `/template/${heroTemplate.slug}` : '/catalog'} className="grid size-10 place-items-center rounded-full bg-slate-950 text-white transition hover:bg-lime-500 hover:text-slate-950"><ArrowRight className="size-4" /></Link></div>
@@ -91,7 +91,7 @@ export default async function HomePage() {
 
       <section className="px-5 pb-16 lg:px-8 lg:pb-24"><div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-slate-950 px-6 py-12 text-center text-white sm:px-12"><Search className="mx-auto size-7 text-lime-300" /><h2 className="mx-auto mt-5 max-w-2xl font-heading text-3xl font-extrabold tracking-tight sm:text-4xl">Your best work deserves a better starting point.</h2><p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-slate-300">Browse the collection and find the building blocks for something people will remember.</p><Link href="/catalog" className="mt-7 inline-flex items-center gap-2 rounded-full bg-lime-300 px-5 py-3.5 text-sm font-extrabold text-slate-950 transition hover:bg-lime-200">Explore the catalog <ArrowRight className="size-4" /></Link></div></section>
 
-      <footer className="border-t border-slate-200 px-5 py-8 lg:px-8"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 text-sm text-slate-500 sm:flex-row sm:items-center"><div className="flex items-center gap-2 font-heading font-extrabold text-slate-950"><span className="grid size-7 place-items-center rounded-lg bg-slate-950 text-[10px] text-lime-300">T</span> Template Haven</div><p>Thoughtful templates for ambitious ideas.</p><div className="flex gap-4"><Link href="/catalog" className="hover:text-slate-950">Catalog</Link><Link href="/dashboard" className="hover:text-slate-950">Workspace</Link></div></div></footer>
+      <footer className="border-t border-[#D0BDA8] px-5 py-8 lg:px-8"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 text-sm text-[#778083] sm:flex-row sm:items-center"><div className="flex items-center gap-2 font-heading font-extrabold text-[#505F62]"><span className="grid size-7 place-items-center rounded-lg bg-[#505F62] text-[10px] text-[#FFCF00]">U</span> UPLIFT</div><p>LIFT YOUR BRAND HIGHER.</p><div className="flex gap-4"><Link href="/catalog" className="hover:text-[#F18744]">Catalog</Link><Link href="/dashboard" className="hover:text-[#F18744]">Workspace</Link></div></div></footer>
     </main>
   )
 }

@@ -1,0 +1,42 @@
+1:"$Sreact.fragment"
+2:I[45678,["/_next/static/chunks/3e75be2e5831bdd0.js","/_next/static/chunks/e75ad45c6220b605.js"],"default"]
+4:I[13642,["/_next/static/chunks/3e75be2e5831bdd0.js","/_next/static/chunks/e75ad45c6220b605.js"],"default"]
+5:I[97367,["/_next/static/chunks/ff1a16fafef87110.js","/_next/static/chunks/247eb132b7f7b574.js"],"OutletBoundary"]
+6:"$Sreact.suspense"
+3:T4c7,<h1>Testing React Applications</h1>
+<p>Testing is crucial for maintaining high-quality React applications. Let&#39;s explore different testing strategies and tools.</p>
+<h2>Testing Tools</h2>
+<ul>
+<li>Jest</li>
+<li>React Testing Library</li>
+<li>Cypress</li>
+<li>MSW (Mock Service Worker)</li>
+</ul>
+<h2>Example Tests</h2>
+<pre><code class="language-jsx">import { render, screen, fireEvent } from &quot;@testing-library/react&quot;;
+import userEvent from &quot;@testing-library/user-event&quot;;
+import Counter from &quot;./Counter&quot;;
+
+describe(&quot;Counter&quot;, () =&gt; {
+  test(&quot;renders counter with initial value&quot;, () =&gt; {
+    render(&lt;Counter /&gt;);
+    expect(screen.getByText(&quot;Count: 0&quot;)).toBeInTheDocument();
+  });
+
+  test(&quot;increments counter when button is clicked&quot;, async () =&gt; {
+    render(&lt;Counter /&gt;);
+    const button = screen.getByRole(&quot;button&quot;, { name: /increment/i });
+    await userEvent.click(button);
+    expect(screen.getByText(&quot;Count: 1&quot;)).toBeInTheDocument();
+  });
+});
+</code></pre>
+<h2>Testing Strategies</h2>
+<ol>
+<li>Unit Testing</li>
+<li>Integration Testing</li>
+<li>End-to-End Testing</li>
+<li>Snapshot Testing</li>
+</ol>
+0:{"buildId":"Hx_zHdHCajX3V7N1bDE2O","rsc":["$","$1","c",{"children":[["$","div",null,{"className":"min-h-screen flex flex-col","children":[["$","div",null,{"className":"fixed inset-0 z-0","children":[["$","div",null,{"className":"absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:28px_48px] -z-10"}],["$","div",null,{"className":"absolute left-0 right-0 top-0 -z-10 m-auto h-[1200px] w-[1200px] rounded-full bg-neutral-400 opacity-10 blur-[100px]"}]]}],["$","$L2",null,{}],["$","main",null,{"className":"flex-grow","children":["$","article",null,{"className":"relative z-20 w-[896px] mx-auto mt-32 mb-12","children":["$","div",null,{"className":"prose dark:prose-invert max-w-none","children":["$","div",null,{"dangerouslySetInnerHTML":{"__html":"$3"}}]}]}]}],["$","$L4",null,{}]]}],[["$","script","script-0",{"src":"/_next/static/chunks/e75ad45c6220b605.js","async":true}]],["$","$L5",null,{"children":["$","$6",null,{"name":"Next.MetadataOutlet","children":"$@7"}]}]]}],"loading":null,"isPartial":false}
+7:null

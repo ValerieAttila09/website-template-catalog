@@ -48,30 +48,30 @@ export default async function CatalogPage({ searchParams }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f8f6] text-slate-950">
-      <header className="border-b border-slate-200/80 bg-white/85 backdrop-blur">
+    <main className="min-h-screen bg-[#F9F2E7] text-[#505F62]">
+      <header className="border-b border-[#D0BDA8] bg-[#F9F2E7]/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
           <Link href="/" className="flex items-center gap-3">
-            <span className="grid size-9 place-items-center rounded-xl bg-slate-950 text-sm font-black text-lime-300">T</span>
-            <span className="font-heading text-lg font-extrabold tracking-tight">Template Haven</span>
+            <span className="grid size-9 place-items-center rounded-xl bg-[#505F62] font-heading text-sm font-extrabold text-[#FFCF00]">U</span>
+            <span><span className="block font-heading text-lg font-extrabold tracking-tight">UPLIFT</span><span className="hidden text-[9px] font-semibold tracking-[.14em] text-[#F18744] sm:block">LIFT YOUR BRAND HIGHER</span></span>
           </Link>
-          <nav className="hidden items-center gap-7 text-sm font-semibold text-slate-500 md:flex">
-            <Link href="/catalog" className="text-slate-950">Catalog</Link>
-            <Link href="/dashboard" className="transition hover:text-slate-950">Dashboard</Link>
+          <nav className="hidden items-center gap-7 text-sm font-semibold text-[#778083] md:flex">
+            <Link href="/catalog" className="text-[#505F62]">Catalog</Link>
+            <Link href="/dashboard" className="transition hover:text-[#F18744]">Dashboard</Link>
           </nav>
-          <Link href="/dashboard" className="rounded-full border border-slate-200 px-4 py-2 text-xs font-bold transition hover:border-slate-950 hover:bg-slate-950 hover:text-white">
+          <Link href="/dashboard" className="rounded-full border border-[#D0BDA8] px-4 py-2 text-xs font-bold transition hover:border-[#F18744] hover:bg-[#F18744] hover:text-[#F9F2E7]">
             My workspace
           </Link>
         </div>
       </header>
 
       <div className="mx-auto max-w-7xl px-5 pb-16 pt-10 lg:px-8 lg:pt-14">
-        <section className="relative overflow-hidden rounded-[2rem] bg-slate-950 px-6 py-10 text-white shadow-xl shadow-slate-900/10 sm:px-10 lg:px-14 lg:py-14">
-          <div className="absolute -right-20 -top-28 size-72 rounded-full bg-lime-300/20 blur-3xl" />
+        <section className="relative overflow-hidden rounded-[2rem] bg-[#505F62] px-6 py-10 text-[#F9F2E7] shadow-xl shadow-[#505F62]/20 sm:px-10 lg:px-14 lg:py-14">
+          <div className="absolute -right-20 -top-28 size-72 rounded-full bg-[radial-gradient(circle,#FFCF00_0%,#F18744_45%,transparent_72%)] opacity-70 blur-2xl" />
           <div className="relative max-w-2xl">
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-lime-300">Curated digital goods</p>
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-[#FFCF00]">LIFT YOUR BRAND HIGHER</p>
             <h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">A better starting point for your next launch.</h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-slate-300">Template premium yang rapi, cepat dikustomisasi, dan siap membantu ide Anda terlihat profesional sejak hari pertama.</p>
+            <p className="mt-5 max-w-xl text-base leading-7 text-[#F9F2E7]/75">Template premium yang rapi, cepat dikustomisasi, dan siap membantu ide Anda terlihat profesional sejak hari pertama.</p>
           </div>
           <div className="relative mt-9 flex flex-wrap gap-8 border-t border-white/15 pt-6 text-sm">
             <div><strong className="block text-2xl text-white">{templateCount}</strong><span className="text-slate-400">template aktif</span></div>
@@ -85,7 +85,7 @@ export default async function CatalogPage({ searchParams }: PageProps) {
             <p className="text-sm font-bold uppercase tracking-[0.18em] text-slate-400">Explore the collection</p>
             <h2 className="mt-2 font-heading text-3xl font-extrabold tracking-tight">Find your next favorite.</h2>
           </div>
-          <p className="text-sm text-slate-500"><span className="font-bold text-slate-900">{templateCount}</span> hasil ditemukan</p>
+          <p className="text-sm text-[#778083]"><span className="font-bold text-[#505F62]">{templateCount}</span> hasil ditemukan</p>
         </div>
 
         <FilterBar />
@@ -102,7 +102,7 @@ export default async function CatalogPage({ searchParams }: PageProps) {
         ) : (
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {templates?.map((template) => (
-              <article key={template.id} className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl hover:shadow-slate-900/10">
+              <article key={template.id} className="group overflow-hidden rounded-3xl border border-[#D0BDA8] bg-[#F9F2E7] shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#F18744] hover:shadow-xl hover:shadow-[#505F62]/10">
                 <div className="relative overflow-hidden bg-slate-100">
                   <Link href={`/template/${template.slug}`} className="block aspect-[16/10] overflow-hidden">
                     <img src={template.thumbnail_url || '/placeholder.png'} alt={template.title} className="size-full object-cover transition duration-500 group-hover:scale-105" />
@@ -115,19 +115,19 @@ export default async function CatalogPage({ searchParams }: PageProps) {
 
                 <div className="p-5">
                   <div className="flex items-center justify-between gap-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    <span className="text-lime-700">{template.category || 'General'}</span>
+                    <span className="text-[#F18744]">{template.category || 'General'}</span>
                     <span>{new Date(template.created_at).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })}</span>
                   </div>
-                  <h2 className="mt-3 truncate font-heading text-xl font-extrabold tracking-tight text-slate-950">{template.title}</h2>
-                  <p className="mt-2 line-clamp-2 min-h-10 text-sm leading-5 text-slate-500">{template.description || 'Template fleksibel untuk kebutuhan digital Anda.'}</p>
+                  <h2 className="mt-3 truncate font-heading text-xl font-extrabold tracking-tight text-[#505F62]">{template.title}</h2>
+                  <p className="mt-2 line-clamp-2 min-h-10 text-sm leading-5 text-[#778083]">{template.description || 'Template fleksibel untuk kebutuhan digital Anda.'}</p>
                   <div className="mt-4 flex min-h-6 flex-wrap gap-1.5">
                     {template.tech_stack?.slice(0, 3).map((techItem: string) => (
-                      <span key={techItem} className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-600">{techItem}</span>
+                      <span key={techItem} className="rounded-full bg-[#FFCF00] px-2.5 py-1 text-[10px] font-bold text-[#505F62]">{techItem}</span>
                     ))}
                   </div>
                   <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
-                    <span className="font-heading text-lg font-extrabold text-slate-950">Rp {Number(template.price).toLocaleString('id-ID')}</span>
-                    <Link href={`/template/${template.slug}`} className="rounded-full bg-slate-950 px-4 py-2 text-xs font-bold text-white transition hover:bg-lime-500 hover:text-slate-950">View template <span aria-hidden="true">↗</span></Link>
+                    <span className="font-heading text-lg font-extrabold text-[#505F62]">Rp {Number(template.price).toLocaleString('id-ID')}</span>
+                    <Link href={`/template/${template.slug}`} className="rounded-full bg-[#505F62] px-4 py-2 text-xs font-bold text-[#F9F2E7] transition hover:bg-[#F18744]">View template <span aria-hidden="true">↗</span></Link>
                   </div>
                 </div>
               </article>
