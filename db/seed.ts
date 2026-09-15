@@ -81,8 +81,67 @@ function toSlug(folderName: string) {
   return folderName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-function toPreviewUrl(folderName: string, entrypoint = 'index.html') {
-  return `/demo/${encodeURIComponent(folderName)}/${entrypoint}`;
+function toTitle(folderName: string) {
+  return folderName
+    .replace(/[-_]+/g, ' ')
+    .replace(/\b(out\d*|dist|main|free|nextjs|tailwind)\b/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
+function inferTechStack(folderName: string) {
+  const name = folderName.toLowerCase();
+  const stack = ['HTML5', 'CSS', 'JavaScript'];
+
+  if (name.includes('next') || name.includes('shadcn') || name.includes('astro')) {
+    stack.unshift('Next.js');
+  }
+  if (name.includes('tailwind')) {
+    stack.splice(1, 0, 'Tailwind CSS');
+  }
+  if (name.includes('react') || name.includes('next') || name.includes('shadcn')) {
+    stack.splice(1, 0, 'React');
+  }
+
+  return [...new Set(stack)];
+}
+
+function findEntrypoint(folderName: string, preferredEntrypoint?: string) {
+  const demoPath = path.join(process.cwd(), 'public', 'demo', folderName);
+  const candidates = [
+    preferredEntrypoint,
+    'index.html',
+    'client/index.html',
+    'src/index.html',
+    'dist/index.html',
+  ].filter((candidate): candidate is string => Boolean(candidate));
+
+  for (const candidate of candidates) {
+    if (existsSync(path.join(demoPath, candidate))) {
+      return candidate;
+    }
+  }
+
+  const indexFiles: string[] = [];
+  const visit = (currentPath: string, relativePath = '') => {
+    for (const entry of readdirSync(currentPath, { withFileTypes: true })) {
+      const entryRelativePath = path.join(relativePath, entry.name);
+      if (entry.isDirectory()) {
+        visit(path.join(currentPath, entry.name), entryRelativePath);
+      } else if (entry.name === 'index.html' && !/(^|\/)(404|_not-found)(\/|\.)/.test(entryRelativePath)) {
+        indexFiles.push(entryRelativePath);
+      }
+    }
+  };
+
+  visit(demoPath);
+  return indexFiles.sort((first, second) => first.length - second.length)[0] || 'index.html';
+}
+
+function toPreviewUrl(folderName: string, entrypoint: string) {
+  const encodedEntrypoint = entrypoint.split(path.sep).map((segment) => encodeURIComponent(segment)).join('/');
+  return `/demo/${encodeURIComponent(folderName)}/${encodedEntrypoint}`;
 }
 
 function getThumbnailUrl(folderName: string, thumbnailFile?: string) {
@@ -96,16 +155,26 @@ function getThumbnailUrl(folderName: string, thumbnailFile?: string) {
   return 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1200&auto=format&fit=crop';
 }
 
+function getTemplateMeta(folderName: string): TemplateMeta {
+  return demoMeta[folderName] || {
+    title: toTitle(folderName),
+    category: 'Website Template',
+    description: `Template website ${toTitle(folderName)} yang siap dikustomisasi untuk kebutuhan brand dan project digital Anda.`,
+    techStack: inferTechStack(folderName),
+    price: '125000.00',
+  };
+}
+
 async function main() {
   const demoRoot = path.join(process.cwd(), 'public', 'demo');
   const folders = readdirSync(demoRoot, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() && demoMeta[entry.name])
+    .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name);
 
   const values = folders.map((folderName) => {
-    const meta = demoMeta[folderName];
+    const meta = getTemplateMeta(folderName);
     const slug = toSlug(folderName);
-    const entrypoint = meta.entrypoint || 'index.html';
+    const entrypoint = findEntrypoint(folderName, meta.entrypoint);
 
     return {
       title: meta.title,
